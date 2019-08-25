@@ -1,5 +1,6 @@
 import { Map } from "../models/map";
 import { Direction } from "../enums/enums";
+import diacritics from "diacritics";
 
 export class CodeGenerator {
   protected map: Map;
@@ -13,22 +14,6 @@ export class CodeGenerator {
   //
   public generate() : string {
     return "";
-  }
-
-  //
-  // Replace diacritics in a string with ordinary letters.
-  // 
-  protected removeAccents(str: string): string {
-    if (typeof str !== "string") return str; 
-    const accents = "ÀÁÂÃÄÅĄàáâãäåąßÒÓÔÕÕÖØÓòóôõöøóÈÉÊËĘèéêëęðÇĆçćÐÌÍÎÏìíîïÙÚÛÜùúûüÑŃñńŠŚšśŸÿýŽŻŹžżź";
-    const accentsOut = "AAAAAAAaaaaaaaBOOOOOOOOoooooooEEEEEeeeeeeCCccDIIIIiiiiUUUUuuuuNNnnSSssYyyZZZzzz";
-    return str
-      .split("")
-      .map((letter, index) => {
-        const accentIndex = accents.indexOf(letter);
-        return accentIndex !== -1 ? accentsOut[accentIndex] : letter;
-      })
-      .join("");
   }
 
   // 
@@ -68,7 +53,7 @@ export class CodeGenerator {
   // "hello world" => "HelloWorld"
   // 
   protected className(str: string) {
-    return new Handlebars.SafeString(this.capitalize(this.camelCase(this.removeSpecialChars(this.removeAccents(str)))));
+    return new Handlebars.SafeString(this.capitalize(this.camelCase(this.removeSpecialChars(diacritics.remove(str)))));
   }  
 
   protected dirToStr(dir: Direction): string {
